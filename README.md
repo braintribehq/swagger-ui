@@ -1,5 +1,53 @@
 # <img src="https://raw.githubusercontent.com/swagger-api/swagger.io/wordpress/images/assets/SWU-logo-clr.png" width="300">
 
+## Quick introduction for BRAINRIBE employees:
+This repo was forked alongside with **swagger-js** because in 2019 there were a two OpenAPI 3.0 related bugs which were fixed by us. We opened a PR, but no owner of the swagger repos could be contacted to merge it:
+1) Arrays in multipart format were supported in the UI but it generated invalid HTTP requests (the fix is in the swagger-js repo)
+2) It wasn't possible to skip sending empty values (the fix is in this repo)
+
+Both bugs were fixed meanwhile but we still like our solution better and also want to be able to fix possible future bugs on our own instead of waiting a year or two until they are fixed upstream.
+1) A different multipart array fix was implemented upstream. Both their and our fix have (different) issues when creating a CURL command from the sent request. We might decide to apply another fix there later. For now, either of them works similarily well for us.
+2) To be able to skip sending empty values, we merged an early version of the current upstream fix, which however works better for us because it skips sending empty values per default, where in their version every value would need to be skipped separately by checking the respective checkboxes one by one.
+
+### How to build and use:
+
+#### The multipart array fix
+If you want to include our multipart array fix you need to build `swagger-js` first by checking out the `nor` branch and stepping inside the repo. To make sure the checkout went well you can run the following command and check for errors
+```
+npm run build
+```
+
+Then you need to include your local version of that repo as dependency of `swagger-ui` in the `package.json` by specifying the file system path of the checked out repo as the used version like so:
+```
+"swagger-client": "file:C:\\sources\\github\\swagger-js",
+```
+
+If you don't care about using our version of the fix this step can be skipped
+
+#### Build and deploy
+Check out the `nor` branch in the `swagger-ui` repo and run
+```
+npm run build
+```
+
+You might get an error like that which you can safely ignore:
+
+```
+ERROR in asset size limit: The following asset(s) exceed the recommended size limit (1000 KiB).
+This can impact web performance.
+Assets:
+  swagger-ui-bundle.js (1.04 MiB)
+```
+
+After success you should find a `dist/` folder with a few files where two of them are of interest to you:
+* `swagger-ui-bundle.js`
+* `swagger-ui-standalone-preset.js`
+
+If you want to use these files for our openapi endpoints you need to copy them to  `tribefire.cortex:openapi-model-processing/src/com/braintribe/model/openapi/servlets`.
+
+## Introduction from upstream:
+
+
 [![NPM version](https://badge.fury.io/js/swagger-ui.svg)](http://badge.fury.io/js/swagger-ui)
 [![Build Status](https://jenkins.swagger.io/view/OSS%20-%20JavaScript/job/oss-swagger-ui-master/badge/icon?subject=jenkins%20build)](https://jenkins.swagger.io/view/OSS%20-%20JavaScript/job/oss-swagger-ui-master/)
 [![npm audit](https://jenkins.swagger.io/buildStatus/icon?job=oss-swagger-ui-security-audit&subject=npm%20audit)](https://jenkins.swagger.io/job/oss-swagger-ui-security-audit/lastBuild/console)
